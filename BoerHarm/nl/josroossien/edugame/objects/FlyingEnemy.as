@@ -1,0 +1,13 @@
+﻿package nl.josroossien.edugame.objects  {import fl.transitions.Fly;
+
+import flash.display.MovieClip;
+import flash.events.Event;
+import flash.geom.Rectangle;
+
+import flashx.textLayout.elements.BreakElement;
+
+import nl.josroossien.edugame.builders.LevelManager;
+import nl.josroossien.edugame.display.GameS;
+import nl.josroossien.edugame.utils.MathUtil;
+import nl.josroossien.edugame.utils.RectangleCollision;
+		public class FlyingEnemy extends MovieClip {				public static var fEnemy:FlyingEnemy;				private var bee:Bee;		private var mos:Mosquito;		private var vxE:Number = 0;		private var vyE:Number = 0;		private var eRect:Rectangle;		public var health:Number = 50;		private var block:Block;		private var count:Number = 0;				public function FlyingEnemy(ID:Number) {			fEnemy = this;			this.x = MathUtil.randomNumber(500,4800);			this.y = MathUtil.randomNumber(100,600);			setupEnemy(ID);			this.addEventListener(Event.ENTER_FRAME,gameLoop);		}				public static function getEnemyF():FlyingEnemy {			if( fEnemy == null ) fEnemy = new FlyingEnemy(1);			return fEnemy;		}				private function setupEnemy(ID:Number) {			switch (ID) {				case 1:					eRect = new Rectangle(0, 0, 45, 85); 					bee = new Bee();					addChild(bee);					break;				case 2:					eRect = new Rectangle(0,0,45,85);					mos = new Mosquito();					addChild(mos);					break;				case 3:					break;				case 4:					break;			}		}				private function gameLoop(e:Event):void {					moveEnemy();			checkVoid();			checkDeath();		}				private function moveEnemy():void {						count++;			if (count > 10) {				count = 0;				changeVelocity();			}						this.x += vxE;			this.y += vyE;			eRect.x = this.x-this.width/2;			eRect.y = this.y-this.height/2;		}				private function changeVelocity() { 			vxE = MathUtil.randomNumber(3,6);			vyE = MathUtil.randomNumber(1,4);			var chance:Number = Math.round(MathUtil.randomNumber(0,3));			if (chance == 0)				vyE *= -1;			if (chance == 1)				vxE *= -1;			if (chance == 2) {				vxE *= -1;				vyE *= -1;			}		}				private function checkVoid():void {			if (this.y-this.height > 768 || this.y < -100) {				this.x = MathUtil.randomNumber(500,4800);				this.y = MathUtil.randomNumber(100,600);			}		}				private function checkDeath():void {			if (this.health < 1) {				this.health = 50;				this.x = MathUtil.randomNumber(500,4800);				this.y = MathUtil.randomNumber(100,600);				GameS.getGameS().kills ++;			}		}		}}
